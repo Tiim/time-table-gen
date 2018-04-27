@@ -1,16 +1,19 @@
 package ch.scbirs.timetablegen;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
+import java.awt.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TimeTableModel implements TableModel {
 
-    private static final String[] HEADER = {"Day", "From", "Until"};
-    private static final Class<?>[] CLASSES = {String.class, LocalTime.class, LocalTime.class};
+    private static final String[] HEADER = {"Day", "From", "Until", "Enabled"};
+    private static final Class<?>[] CLASSES = {String.class, LocalTime.class, LocalTime.class, Boolean.class};
 
     private final List<TableModelListener> listeners = new ArrayList<>();
 
@@ -28,7 +31,7 @@ public class TimeTableModel implements TableModel {
 
     @Override
     public int getColumnCount() {
-        return 3;
+        return HEADER.length;
     }
 
     @Override
@@ -43,7 +46,7 @@ public class TimeTableModel implements TableModel {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return true /*columnIndex >= 1*/;
+        return columnIndex >= 1;
     }
 
     @Override
@@ -54,18 +57,23 @@ public class TimeTableModel implements TableModel {
             return model.getRange(rowIndex).getStart();
         } else if (columnIndex == 2) {
             return model.getRange(rowIndex).getEnd();
+        } else if (columnIndex == 3) {
+            return model.getRange(rowIndex).isEnabled();
         }
-        throw new IllegalArgumentException("row can't be bigger than 2");
+        throw new IllegalArgumentException("row can't be bigger than " + (HEADER.length - 1));
     }
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         if (columnIndex == 1) {
             Model.TimeRange range = model.getRange(rowIndex);
-            model.setRange(new Model.TimeRange((LocalTime) aValue, range.getEnd()), rowIndex);
+            model.setRange(new Model.TimeRange((LocalTime) aValue, range.getEnd(), range.isEnabled()), rowIndex);
         } else if (columnIndex == 2) {
             Model.TimeRange range = model.getRange(rowIndex);
-            model.setRange(new Model.TimeRange(range.getEnd(), (LocalTime) aValue), rowIndex);
+            model.setRange(new Model.TimeRange(range.getStart(), (LocalTime) aValue, range.isEnabled()), rowIndex);
+        } else if (columnIndex == 3) {
+            Model.TimeRange range = model.getRange(rowIndex);
+            model.setRange(new Model.TimeRange(range.getStart(), range.getEnd(), (Boolean) aValue), rowIndex);
         }
         listeners.forEach(l -> l.tableChanged(new TableModelEvent(this, rowIndex, rowIndex, columnIndex)));
     }
@@ -78,5 +86,9 @@ public class TimeTableModel implements TableModel {
     @Override
     public void removeTableModelListener(TableModelListener l) {
         listeners.remove(l);
+    }
+
+    public Model getModel() {
+        return model;
     }
 }

@@ -1,11 +1,11 @@
 package ch.scbirs.timetablegen;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.JTableHeader;
 import java.awt.*;
 
 public class MainWindow extends JFrame {
+
+    TimeTableModel tableModel;
 
     public MainWindow() {
         setSize(500, 500);
@@ -20,6 +20,8 @@ public class MainWindow extends JFrame {
         JButton save = new JButton("Save");
         JButton generate = new JButton("Generate");
 
+        generate.addActionListener(l -> preview());
+
         buttons.add(load);
         buttons.add(save);
         buttons.add(generate);
@@ -31,11 +33,17 @@ public class MainWindow extends JFrame {
         pack();
     }
 
+    public void preview() {
+        Model m = tableModel.getModel();
+        Preview p = new Preview(m);
+    }
+
     private Component getTable() {
 
         JPanel t = new JPanel(new BorderLayout());
 
-        JTable table = new JTable(new TimeTableModel(new Model()));
+        tableModel = new TimeTableModel(new Model());
+        JTable table = new JTable(tableModel);
         t.add(table.getTableHeader(), BorderLayout.NORTH);
         t.add(table, BorderLayout.CENTER);
 
