@@ -1,0 +1,22 @@
+anguage: java
+
+jdk:
+  - oraclejdk8
+
+script:
+  - gradle assemble
+  - gradle test
+
+deploy:
+  provider: releases
+  api_key:
+    secure:
+  file: "build/lib/*.jar"
+  skip_cleanup: true
+  on:
+    tags: true
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
