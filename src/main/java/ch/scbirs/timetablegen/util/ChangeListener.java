@@ -6,8 +6,9 @@ import javax.swing.event.DocumentListener;
 import java.util.function.Consumer;
 
 public class ChangeListener {
-    public static void add (JTextField d, Consumer<String> c) {
-        d.getDocument().addDocumentListener(new DocumentListener() {
+
+    public static DocumentListener add (JTextField d, Consumer<String> c) {
+        DocumentListener listener = new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 c.accept(d.getText());
@@ -22,6 +23,12 @@ public class ChangeListener {
             public void changedUpdate(DocumentEvent e) {
                 c.accept(d.getText());
             }
-        });
+        };
+        d.getDocument().addDocumentListener(listener);
+        return listener;
+    }
+
+    public static void remove(JTextField d, DocumentListener dl) {
+        d.getDocument().removeDocumentListener(dl);
     }
 }
