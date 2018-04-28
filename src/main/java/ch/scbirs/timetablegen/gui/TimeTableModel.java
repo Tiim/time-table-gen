@@ -1,11 +1,10 @@
-package ch.scbirs.timetablegen;
+package ch.scbirs.timetablegen.gui;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import ch.scbirs.timetablegen.Model;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
-import java.awt.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,5 +89,10 @@ public class TimeTableModel implements TableModel {
 
     public Model getModel() {
         return model;
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
+        listeners.forEach(l -> l.tableChanged(new TableModelEvent(this)));
     }
 }

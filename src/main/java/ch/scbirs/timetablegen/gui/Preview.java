@@ -1,4 +1,7 @@
-package ch.scbirs.timetablegen;
+package ch.scbirs.timetablegen.gui;
+
+import ch.scbirs.timetablegen.Generator;
+import ch.scbirs.timetablegen.Model;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;

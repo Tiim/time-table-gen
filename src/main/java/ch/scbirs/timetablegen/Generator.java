@@ -1,5 +1,7 @@
 package ch.scbirs.timetablegen;
 
+import ch.scbirs.timetablegen.util.Lang;
+
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;

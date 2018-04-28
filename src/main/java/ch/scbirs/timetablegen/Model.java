@@ -1,11 +1,14 @@
 package ch.scbirs.timetablegen;
 
+import ch.scbirs.timetablegen.util.Lang;
+
 import java.time.LocalTime;
 
 public class Model {
 
     public static final String[] DAYS = Lang.translate("day.All").split(",");
     private final TimeRange[] data = new TimeRange[DAYS.length];
+    private String name = "name.default";
 
     public Model() {
         for (int i = 0; i < data.length; i++) {
@@ -53,12 +56,20 @@ public class Model {
         );
     }
 
-    static class TimeRange {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public static class TimeRange {
         private final boolean enabled;
         private final LocalTime start;
         private final LocalTime end;
 
-        TimeRange(LocalTime start, LocalTime end, boolean enabled) {
+        public TimeRange(LocalTime start, LocalTime end, boolean enabled) {
             this.start = start;
             this.end = end;
             this.enabled = enabled;

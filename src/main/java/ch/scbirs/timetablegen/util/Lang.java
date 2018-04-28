@@ -1,7 +1,6 @@
-package ch.scbirs.timetablegen;
+package ch.scbirs.timetablegen.util;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.Locale;
 import java.util.Properties;

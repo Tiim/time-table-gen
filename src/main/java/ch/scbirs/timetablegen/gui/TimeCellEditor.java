@@ -1,4 +1,4 @@
-package ch.scbirs.timetablegen;
+package ch.scbirs.timetablegen.gui;
 
 import com.google.common.primitives.Ints;
 

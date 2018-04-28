@@ -1,5 +1,7 @@
 package ch.scbirs.timetablegen;
 
+import ch.scbirs.timetablegen.gui.MainWindow;
+
 import java.io.IOException;
 
 public class Main {
