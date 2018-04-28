@@ -46,6 +46,7 @@ public class Persistence {
     }
 
     public File[] getFiles() {
+        mainPath.toFile().mkdirs();
         return mainPath.normalize().toFile().listFiles();
     }
 
