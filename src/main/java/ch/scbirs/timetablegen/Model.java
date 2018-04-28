@@ -25,15 +25,25 @@ public class Model {
     }
 
     public int getWeekdayMaxHour() {
-        int hour = 0;
+        int hour = -1;
         for (int i = 0; i <= 4; i++) {
-            LocalTime end = data[i].getEnd();
-            hour = Math.max(end.getHour() + (end.getMinute() > 0 ? 1 : 0), hour);
+            if (data[i].isEnabled()) {
+                LocalTime end = data[i].getEnd();
+                hour = Math.max(end.getHour() + (end.getMinute() > 0 ? 1 : 0), hour);
+            }
         }
+        hour = hour == -1 ? 20 : hour;
         return hour;
     }
 
     public int getWeekendMaxHour() {
+        if (!data[5].isEnabled() && !data[6].isEnabled()) {
+            return getWeekdayMaxHour();
+        } else if (!data[5].isEnabled()) {
+            return data[6].getEnd().getHour() + (data[6].getEnd().getMinute() > 0 ? 1 : 0);
+        } else if (!data[6].isEnabled()) {
+            return data[5].getEnd().getHour() + (data[5].getEnd().getMinute() > 0 ? 1 : 0);
+        }
         return Math.max(
                 data[5].getEnd().getHour() + (data[5].getEnd().getMinute() > 0 ? 1 : 0),
                 data[6].getEnd().getHour() + (data[6].getEnd().getMinute() > 0 ? 1 : 0)
@@ -43,13 +53,23 @@ public class Model {
     public int getWeekdayMinHour() {
         int hour = 100;
         for (int i = 0; i <= 4; i++) {
-            LocalTime start = data[i].getStart();
-            hour = Math.min(start.getHour(), hour);
+            if (data[i].isEnabled()) {
+                LocalTime start = data[i].getStart();
+                hour = Math.min(start.getHour(), hour);
+            }
         }
+        hour = hour == 100 ? 18 : hour;
         return hour;
     }
 
     public int getWeekendMinHour() {
+        if (!data[5].isEnabled() && !data[6].isEnabled()) {
+            return getWeekdayMinHour();
+        } else if (!data[5].isEnabled()) {
+            return data[6].getStart().getHour();
+        } else if (!data[6].isEnabled()) {
+            return data[5].getStart().getHour();
+        }
         return Math.min(
                 data[5].getStart().getHour(),
                 data[6].getStart().getHour()

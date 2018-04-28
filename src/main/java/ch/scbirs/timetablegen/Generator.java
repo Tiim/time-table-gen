@@ -23,8 +23,11 @@ public class Generator {
     private static final double TEXT_SHRINK = 0.1;
 
 
-    private final int[] timesWeekday;
-    private final int[] timesWeekend;
+    private final int startWeekday;
+    private final int lengthWeekday;
+    private final int startWeekend;
+    private final int lengthWeekend;
+    private final int maxLength;
 
     private final int cols, rows;
     private final int width, height;
@@ -37,17 +40,14 @@ public class Generator {
 
         int minWeekday = model.getWeekdayMinHour() - 1;
         int maxWeekday = model.getWeekdayMaxHour() + 1;
-        timesWeekday = new int[maxWeekday - minWeekday];
-        for (int i = 0; i < timesWeekday.length; i++) {
-            timesWeekday[i] = i + minWeekday;
-        }
+        startWeekday = minWeekday;
+        lengthWeekday = maxWeekday - minWeekday;
         int minWeekend = model.getWeekendMinHour() - 1;
         int maxWeekend = model.getWeekendMaxHour() + 1;
-        timesWeekend = new int[maxWeekend - minWeekend];
-        for (int i = 0; i < timesWeekend.length; i++) {
-            timesWeekend[i] = i + minWeekend;
-        }
-        cols = (DAY_WIDTH + Math.max(timesWeekday.length, timesWeekend.length)) * UNIT_WIDTH;
+        startWeekend = minWeekend;
+        lengthWeekend = maxWeekend - minWeekend;
+        maxLength = Math.max(lengthWeekday, lengthWeekend);
+        cols = (DAY_WIDTH + maxLength) * UNIT_WIDTH;
         rows = DAYS.length + 3;
         width = 50 * cols + STROKE_WIDTH;
         height = 100 * rows + STROKE_WIDTH;
@@ -131,9 +131,7 @@ public class Generator {
     private void drawText(Graphics2D g) {
         g.setColor(Color.BLACK);
         List<TextRec> recs = getTextRecs();
-        System.out.println("Fontsize old: " + g.getFont().getSize2D());
         g.setFont(scaleFont(recs, g));
-        System.out.println("Fontsize new: " + g.getFont().getSize2D());
 
         FontMetrics metrics = g.getFontMetrics();
         for (TextRec rec : recs) {
@@ -147,6 +145,7 @@ public class Generator {
 
     private List<TextRec> getTextRecs() {
         List<TextRec> recs = new ArrayList<>();
+        // day names
         for (int i = 0; i < DAYS.length; i++) {
             int j = i < WEEK_DAYS ? i + 1 : i + 3;
             recs.add(new TextRec(
@@ -154,18 +153,21 @@ public class Generator {
                     cellRect(0, j, DAY_WIDTH * UNIT_WIDTH, 1)
             ));
         }
-        for (int i = 0; i < timesWeekday.length; i++) {
+        // Times weekday
+        for (int i = 0; i < maxLength; i++) {
             recs.add(new TextRec(
-                    String.format("%d:00", timesWeekday[i]),
+                    String.format("%d:00", (startWeekday + i) % 24),
                     cellRect((UNIT_WIDTH * DAY_WIDTH) + (UNIT_WIDTH * i), 0, UNIT_WIDTH, 1)
             ));
         }
-        for (int i = 0; i < timesWeekend.length; i++) {
+        //Times weekend
+        for (int i = 0; i < maxLength; i++) {
             recs.add(new TextRec(
-                    String.format("%d:00", timesWeekend[i]),
+                    String.format("%d:00", (startWeekend + i) % 24),
                     cellRect((UNIT_WIDTH * DAY_WIDTH) + (UNIT_WIDTH * i), WEEK_DAYS + 2, UNIT_WIDTH, 1)
             ));
         }
+        // Shrink the rects
         for (TextRec rec : recs) {
             Rectangle r = rec.getRect();
             r.grow((int) -(r.width * TEXT_SHRINK), (int) -(r.height * TEXT_SHRINK));
@@ -185,9 +187,9 @@ public class Generator {
             LocalTime end = range.getEnd();
             int minTime;
             if (i < 5) {
-                minTime = timesWeekday[0];
+                minTime = startWeekday;
             } else {
-                minTime = timesWeekend[0];
+                minTime = startWeekend;
             }
             long mins = ChronoUnit.MINUTES.between(start, end);
             long offset = ChronoUnit.MINUTES.between(LocalTime.of(minTime, 0), start) / 15;
