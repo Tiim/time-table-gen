@@ -17,7 +17,6 @@ public class Persistence {
     private final Gson json;
     private Path mainPath;
 
-
     public Persistence() {
         mainPath = Paths.get(".", "tables").toAbsolutePath();
         json = new GsonBuilder()
@@ -25,9 +24,11 @@ public class Persistence {
                 .create();
     }
 
-    public void save(Model model) {
-        String filename = model.getName().replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
-        saveToFile(model, mainPath.resolve(filename + ".json"));
+    public Path save(Model model) {
+        String filename = model.getFileName();
+        Path path = mainPath.resolve(filename + ".json");
+        saveToFile(model, path);
+        return path.normalize();
     }
 
     private void saveToFile(Model model, Path path) {
@@ -50,5 +51,9 @@ public class Persistence {
 
     public Model load(File file) throws FileNotFoundException {
         return json.fromJson(new FileReader(file), Model.class);
+    }
+
+    public void setFolder(Path folder) {
+        this.mainPath = folder;
     }
 }

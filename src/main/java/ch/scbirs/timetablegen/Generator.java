@@ -12,8 +12,11 @@ import java.util.List;
 
 public class Generator {
 
+    private static final int WIDTH_MULTIPLIER = 60;
+    private static final int HEIGHT_MULTIPLIER = 100;
+
     private static final Color FILL_COLOR = new Color(0x005fab);
-    private static final int STROKE_WIDTH = 9;
+    private static final int STROKE_WIDTH = 7;
     private static final String[] DAYS = Lang.translate("day.All").split(",");
 
     private static final int WEEK_DAYS = 5;
@@ -49,8 +52,8 @@ public class Generator {
         maxLength = Math.max(lengthWeekday, lengthWeekend);
         cols = (DAY_WIDTH + maxLength) * UNIT_WIDTH;
         rows = DAYS.length + 3;
-        width = 50 * cols + STROKE_WIDTH;
-        height = 100 * rows + STROKE_WIDTH;
+        width = WIDTH_MULTIPLIER * cols + STROKE_WIDTH;
+        height = HEIGHT_MULTIPLIER * rows + STROKE_WIDTH;
 
     }
 

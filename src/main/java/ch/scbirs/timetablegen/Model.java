@@ -84,6 +84,10 @@ public class Model {
         return name;
     }
 
+    public String getFileName() {
+        return name.replaceAll("[^a-zA-Z0-9\\-]", "_");
+    }
+
     public static class TimeRange {
         private final boolean enabled;
         private final LocalTime start;

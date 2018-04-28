@@ -92,6 +92,9 @@ public class TimeTableModel implements TableModel {
     }
 
     public void setModel(Model model) {
+        if (model == null) {
+            model = new Model();
+        }
         this.model = model;
         listeners.forEach(l -> l.tableChanged(new TableModelEvent(this)));
     }
