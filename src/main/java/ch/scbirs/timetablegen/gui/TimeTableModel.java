@@ -1,6 +1,7 @@
 package ch.scbirs.timetablegen.gui;
 
 import ch.scbirs.timetablegen.Model;
+import ch.scbirs.timetablegen.util.Lang;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -11,7 +12,9 @@ import java.util.List;
 
 public class TimeTableModel implements TableModel {
 
-    private static final String[] HEADER = {"Day", "From", "Until", "Enabled"};
+    private static final String[] HEADER = Lang.translate(new String[]{
+            "table.Day", "table.From", "table.Until", "table.Enabled"
+    });
     private static final Class<?>[] CLASSES = {String.class, LocalTime.class, LocalTime.class, Boolean.class};
 
     private final List<TableModelListener> listeners = new ArrayList<>();

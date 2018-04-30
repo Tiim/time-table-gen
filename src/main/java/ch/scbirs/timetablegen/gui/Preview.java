@@ -2,6 +2,7 @@ package ch.scbirs.timetablegen.gui;
 
 import ch.scbirs.timetablegen.Generator;
 import ch.scbirs.timetablegen.Model;
+import ch.scbirs.timetablegen.util.Lang;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -20,10 +21,12 @@ public class Preview extends JFrame {
         this.model = model;
         generate = new Generator(model).generate();
 
+        setTitle(Lang.translate("window.preview.Window"));
+
         JLabel contentPane = new JLabel(new ImageIcon(generate.getScaledInstance(800, -1, BufferedImage.SCALE_SMOOTH)));
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(contentPane, BorderLayout.CENTER);
-        JButton save = new JButton("gui.save");
+        JButton save = new JButton(Lang.translate("button.Save"));
 
         save.addActionListener(l -> save());
 

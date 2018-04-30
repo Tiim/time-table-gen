@@ -3,12 +3,12 @@ package ch.scbirs.timetablegen.gui;
 import ch.scbirs.timetablegen.Model;
 import ch.scbirs.timetablegen.Persistence;
 import ch.scbirs.timetablegen.util.ChangeListener;
+import ch.scbirs.timetablegen.util.Lang;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Optional;
 
 public class MainWindow extends JFrame {
 
@@ -20,7 +20,8 @@ public class MainWindow extends JFrame {
 
 
     public MainWindow() {
-        setSize(500, 500);
+        setSize(500, 350);
+        setTitle(Lang.translate("window.main.Name"));
         p = new Persistence();
 
         init();
@@ -31,13 +32,26 @@ public class MainWindow extends JFrame {
         selectFile();
     }
 
+    private void updateRowHeights(JTable table) {
+        for (int row = 0; row < table.getRowCount(); row++) {
+            int rowHeight = table.getRowHeight();
+
+            for (int column = 0; column < table.getColumnCount(); column++) {
+                Component comp = table.prepareRenderer(table.getCellRenderer(row, column), row, column);
+                rowHeight = Math.max(rowHeight, comp.getPreferredSize().height);
+            }
+
+            table.setRowHeight(row, rowHeight);
+        }
+    }
+
     private void init() {
         Component box = getTable();
 
         JPanel buttons = new JPanel(new FlowLayout());
-        JButton changeFolder = new JButton("Change folder");
-        JButton save = new JButton("Save");
-        JButton generate = new JButton("Generate");
+        JButton changeFolder = new JButton(Lang.translate("button.ChangeFolder"));
+        JButton save = new JButton(Lang.translate("button.Save"));
+        JButton generate = new JButton(Lang.translate("button.Generate"));
 
         changeFolder.addActionListener(l -> changeFolder());
         save.addActionListener(l -> save());
@@ -47,7 +61,7 @@ public class MainWindow extends JFrame {
         buttons.add(save);
         buttons.add(generate);
 
-        name = new JTextField("name.default");
+        name = new JTextField(Lang.translate("name.default"));
         ChangeListener.add(name, this::setFileName);
 
         JComboBox<File> files = new JComboBox<>();
@@ -71,7 +85,7 @@ public class MainWindow extends JFrame {
         border2.add(files, BorderLayout.NORTH);
         border.add(buttons, BorderLayout.NORTH);
         setContentPane(border);
-        pack();
+        //pack();
     }
 
     private void changeFolder() {
@@ -130,7 +144,8 @@ public class MainWindow extends JFrame {
         table.getColumnModel().getColumn(1).setCellEditor(tce);
         table.getColumnModel().getColumn(2).setCellEditor(tce);
 
+        tableModel.addTableModelListener(l -> updateRowHeights(table));
 
-        return t;
+        return new JScrollPane(t);
     }
 }

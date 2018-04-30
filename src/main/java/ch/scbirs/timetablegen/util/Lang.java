@@ -2,6 +2,7 @@ package ch.scbirs.timetablegen.util;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -30,4 +31,7 @@ public class Lang {
         }
     }
 
+    public static String[] translate(String[] keys) {
+        return Arrays.stream(keys).map(Lang::translate).toArray(String[]::new);
+    }
 }

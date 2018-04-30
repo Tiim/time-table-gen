@@ -3,6 +3,9 @@ language: java
 jdk:
   - oraclejdk8
 
+before-script:
+  - chmod +x gradlew
+
 script:
   - gradle assemble
   - gradle test

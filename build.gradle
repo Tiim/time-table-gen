@@ -9,6 +9,10 @@ def commits = gitversion.pop(); // get commits since tag
 def ver = gitversion.join("-").substring(1); // get tag minus first character
 version ver + "+" + commits + "." + gitsha
 
+compileJava {
+    sourceCompatibility = 1.10
+    targetCompatibility = 1.10
+}
 
 repositories {
     mavenCentral()
