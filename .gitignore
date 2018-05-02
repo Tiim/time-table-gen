@@ -9,3 +9,4 @@ config.json
 *.class
 *.iml
 !gradle-wrapper.jar
+!/screenshot/*png

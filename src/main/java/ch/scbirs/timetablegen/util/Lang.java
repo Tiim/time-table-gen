@@ -24,7 +24,7 @@ public class Lang {
         try {
             URL url = Lang.class.getResource("/lang/" +lang + ".properties");
             if (url == null){
-                url = Lang.class.getResource("/lang/de.properties");
+                url = Lang.class.getResource("/lang/en.properties");
             }
             p.load(url.openStream());
         } catch (IOException e) {
