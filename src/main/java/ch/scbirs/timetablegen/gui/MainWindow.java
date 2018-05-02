@@ -9,7 +9,6 @@ import org.apache.commons.io.FilenameUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class MainWindow extends JFrame {
@@ -23,8 +22,9 @@ public class MainWindow extends JFrame {
 
     public MainWindow() {
         setSize(500, 350);
-        setTitle(Lang.translate("window.main.Name"));
         p = new Persistence();
+
+        setTitle(Lang.translate("window.main.Name") + " " + p.getFolder());
 
         init();
         loadFirst();
@@ -67,6 +67,7 @@ public class MainWindow extends JFrame {
         ChangeListener.add(name, this::setFileName);
 
         JComboBox<File> files = new JComboBox<>();
+        files.setRenderer(new FileComboBoxRenderer());
 
         filesModel = new FileComboBoxModel();
         filesModel.set(p.getFiles());
@@ -100,6 +101,7 @@ public class MainWindow extends JFrame {
             filesModel.set(p.getFiles());
             loadFirst();
         }
+        setTitle(Lang.translate("window.main.Name") + " " + p.getFolder());
     }
 
     private void selectFile() {

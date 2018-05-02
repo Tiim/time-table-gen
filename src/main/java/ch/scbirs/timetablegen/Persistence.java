@@ -26,6 +26,9 @@ public class Persistence {
                 .create();
         config = new JSONProperty(Paths.get(CONFIG));
         mainPath = Paths.get(config.get("last-path", "./tables"));
+        while (!Files.isDirectory(mainPath)) {
+            mainPath = mainPath.getParent();
+        }
     }
 
     public Path save(Model model, Path path) {
@@ -54,6 +57,9 @@ public class Persistence {
     }
 
     public void setFolder(Path folder) {
+        while (!Files.isDirectory(folder)) {
+            folder = folder.getParent();
+        }
         this.mainPath = folder;
         config.set("last-path", folder.toString());
     }
