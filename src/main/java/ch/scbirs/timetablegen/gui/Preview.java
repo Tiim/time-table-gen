@@ -10,16 +10,19 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class Preview extends JFrame {
 
     private final Model model;
     private final BufferedImage generate;
+    private final Path dir;
 
 
-    public Preview(Model model) {
+    public Preview(Model model, Path dir) {
         this.model = model;
         generate = new Generator(model).generate();
+        this.dir = dir;
 
         setTitle(Lang.translate("window.preview.Window"));
 
@@ -37,9 +40,7 @@ public class Preview extends JFrame {
     }
 
     private void save() {
-        File dir = new File(".", "images");
-        dir.mkdirs();
-        JFileChooser c = new JFileChooser(dir);
+        JFileChooser c = new JFileChooser(dir.toFile());
         c.setSelectedFile(new File( model.getFileName() + ".png"));
         int i = c.showSaveDialog(this);
         if (i == JFileChooser.APPROVE_OPTION) {

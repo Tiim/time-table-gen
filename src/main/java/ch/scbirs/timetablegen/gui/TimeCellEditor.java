@@ -20,10 +20,17 @@ public class TimeCellEditor extends AbstractCellEditor implements TableCellEdito
         String text = component.getText();
         try {
             String[] split = text.split(":");
-            return LocalTime.of(
-                    Ints.constrainToRange(Integer.parseInt(split[0]), 0, 23),
-                    Ints.constrainToRange(Integer.parseInt(split[1]), 0, 59));
-        } catch (NumberFormatException|ArrayIndexOutOfBoundsException e){
+            switch (split.length) {
+                case 1:
+                    return LocalTime.of(Ints.constrainToRange(Integer.parseInt(split[0]), 0, 23), 0);
+                case 2:
+                    return LocalTime.of(
+                            Ints.constrainToRange(Integer.parseInt(split[0]), 0, 23),
+                            Ints.constrainToRange(Integer.parseInt(split[1]), 0, 59));
+                default:
+                    return lastValue;
+            }
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             return lastValue;
         }
     }
@@ -33,7 +40,7 @@ public class TimeCellEditor extends AbstractCellEditor implements TableCellEdito
         assert value instanceof LocalTime;
         ChangeListener.remove(component, listener);
         lastValue = (LocalTime) value;
-        component.setText(lastValue.toString());
+        component.setText("");
         listener = ChangeListener.add(component, c -> {
             Object cellEditorValue = getCellEditorValue();
             System.out.println("New value " + cellEditorValue);

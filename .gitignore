@@ -3,6 +3,7 @@
 .idea/
 /build/
 /out/
+config.json
 *.png
 *.jar
 *.class

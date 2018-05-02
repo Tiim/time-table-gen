@@ -4,11 +4,13 @@ import ch.scbirs.timetablegen.Model;
 import ch.scbirs.timetablegen.Persistence;
 import ch.scbirs.timetablegen.util.ChangeListener;
 import ch.scbirs.timetablegen.util.Lang;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class MainWindow extends JFrame {
 
@@ -110,8 +112,8 @@ public class MainWindow extends JFrame {
             }
             tableModel.setModel(m);
 
-        } catch (FileNotFoundException e1) {
-            e1.printStackTrace();
+        } catch (IOException e1) {
+            System.out.println("Can't load file " + e1.getMessage());
         }
     }
 
@@ -120,15 +122,25 @@ public class MainWindow extends JFrame {
     }
 
     private void save() {
-        File f = p.save(tableModel.getModel()).toFile();
-        String name = tableModel.getModel().getFileName();
-        filesModel.set(p.getFiles());
-        filesModel.setSelectedItem(f);
+        JFileChooser c = new JFileChooser(p.getFolder().toFile());
+        Model model = tableModel.getModel();
+        c.setSelectedFile(new File(model.getFileName() + ".json"));
+        int i = c.showSaveDialog(this);
+        if (i == JFileChooser.APPROVE_OPTION) {
+            File toSave = c.getSelectedFile();
+            String name = FilenameUtils.getBaseName(c.getSelectedFile().toString());
+            if (!name.equals(model.getFileName())) {
+                model.setName(name);
+            }
+            File f = p.save(model, toSave.toPath()).toFile();
+            filesModel.set(p.getFiles());
+            filesModel.setSelectedItem(f);
+        }
     }
 
     public void preview() {
         Model m = tableModel.getModel();
-        Preview p = new Preview(m);
+        Preview prev = new Preview(m, p.getFolder());
     }
 
     private Component getTable() {
