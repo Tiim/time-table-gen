@@ -15,7 +15,7 @@ public class Main {
         setUIFont();
         MainWindow window = new MainWindow();
         window.setVisible(true);
-        window.setDefaultCloseOperation(MainWindow.DISPOSE_ON_CLOSE);
+        window.setDefaultCloseOperation(MainWindow.EXIT_ON_CLOSE);
     }
 
     private static void setUIFont() {
