@@ -5,12 +5,12 @@ import com.google.common.io.PatternFilenameFilter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.awt.event.ActionEvent;
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Properties;
 
 public class Persistence {
 
@@ -26,14 +26,14 @@ public class Persistence {
                 .create();
         config = new JSONProperty(Paths.get(CONFIG));
         mainPath = Paths.get(config.get("last-path", "./tables"));
-        while (!Files.isDirectory(mainPath)) {
+        if (Files.isRegularFile(mainPath)) {
             mainPath = mainPath.getParent();
         }
     }
 
     public Path save(Model model, Path path) {
         saveToFile(model, path);
-        return path.normalize();
+        return Paths.get(".").toAbsolutePath().relativize(path.toAbsolutePath());
     }
 
     private void saveToFile(Model model, Path path) {
@@ -45,9 +45,13 @@ public class Persistence {
         }
     }
 
-    public File[] getFiles() {
-        mainPath.toFile().mkdirs();
-        return mainPath.normalize().toFile().listFiles(new PatternFilenameFilter(".*\\.json"));
+    public File[] getFiles() throws IOException {
+        if (!Files.isDirectory(mainPath)) {
+            Files.createDirectories(mainPath);
+        }
+        File file = mainPath.normalize().toFile();
+        File[] files = file.listFiles(new PatternFilenameFilter(".*\\.json"));
+        return files == null ? new File[0] : files;
     }
 
     public Model load(File file) throws IOException {
@@ -57,7 +61,7 @@ public class Persistence {
     }
 
     public void setFolder(Path folder) {
-        while (!Files.isDirectory(folder)) {
+        if (Files.isRegularFile(folder)) {
             folder = folder.getParent();
         }
         this.mainPath = folder;

@@ -11,6 +11,9 @@ public class FileComboBoxRenderer extends DefaultListCellRenderer {
     public Component getListCellRendererComponent(JList list, Object value,
                                                   int index, boolean isSelected, boolean cellHasFocus) {
 
+        if (value == null) {
+            value = "";
+        }
         return super.getListCellRendererComponent(list,
                 FilenameUtils.getName(value.toString()), index, isSelected, cellHasFocus);
     }

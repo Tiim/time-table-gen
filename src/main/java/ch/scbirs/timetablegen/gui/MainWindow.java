@@ -70,7 +70,11 @@ public class MainWindow extends JFrame {
         files.setRenderer(new FileComboBoxRenderer());
 
         filesModel = new FileComboBoxModel();
-        filesModel.set(p.getFiles());
+        try {
+            filesModel.set(p.getFiles());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         if (filesModel.getSize() > 0) {
             filesModel.setSelectedItem(0);
@@ -98,7 +102,11 @@ public class MainWindow extends JFrame {
         if (i == JFileChooser.APPROVE_OPTION) {
             File file = f.getSelectedFile();
             p.setFolder(file.toPath());
-            filesModel.set(p.getFiles());
+            try {
+                filesModel.set(p.getFiles());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             loadFirst();
         }
         setTitle(Lang.translate("window.main.Name") + " " + p.getFolder());
@@ -135,7 +143,11 @@ public class MainWindow extends JFrame {
                 model.setName(name);
             }
             File f = p.save(model, toSave.toPath()).toFile();
-            filesModel.set(p.getFiles());
+            try {
+                filesModel.set(p.getFiles());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             filesModel.setSelectedItem(f);
         }
     }
