@@ -2,7 +2,7 @@ plugins {
     id "java"
 }
 
-group 'ch.unibas.gruppe6'
+group 'ch.scbirs.timetablegen'
 def gitversion = 'git describe --tags --long'.execute().text.trim().split("-").toList();
 def gitsha = gitversion.pop(); // get sha
 def commits = gitversion.pop(); // get commits since tag
