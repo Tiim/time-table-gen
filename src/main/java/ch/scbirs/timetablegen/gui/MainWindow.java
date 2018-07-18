@@ -8,6 +8,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.IOException;
 
@@ -21,7 +22,7 @@ public class MainWindow extends JFrame {
 
 
     public MainWindow() {
-        setSize(500, 350);
+        setSize(600, 350);
         p = new Persistence();
 
         setTitle(Lang.translate("window.main.Name") + " " + p.getFolder());
@@ -54,14 +55,17 @@ public class MainWindow extends JFrame {
         JButton changeFolder = new JButton(Lang.translate("button.ChangeFolder"));
         JButton save = new JButton(Lang.translate("button.Save"));
         JButton generate = new JButton(Lang.translate("button.Generate"));
+        JButton copy = new JButton(Lang.translate("button.Copy"));
 
         changeFolder.addActionListener(l -> changeFolder());
         save.addActionListener(l -> save());
         generate.addActionListener(l -> preview());
+        copy.addActionListener(l -> copy());
 
         buttons.add(changeFolder);
         buttons.add(save);
         buttons.add(generate);
+        buttons.add(copy);
 
         name = new JTextField(Lang.translate("name.default"));
         ChangeListener.add(name, this::setFileName);
@@ -92,7 +96,6 @@ public class MainWindow extends JFrame {
         border2.add(files, BorderLayout.NORTH);
         border.add(buttons, BorderLayout.NORTH);
         setContentPane(border);
-        //pack();
     }
 
     private void changeFolder() {
@@ -150,6 +153,25 @@ public class MainWindow extends JFrame {
             }
             filesModel.setSelectedItem(f);
         }
+    }
+
+    private void copy() {
+        Model m = tableModel.getModel();
+        StringBuilder b = new StringBuilder();
+        b.append(m.getName()).append("\n\n");
+        String[] days = Model.DAYS;
+        for (int i = 0; i < days.length; i++) {
+            Model.TimeRange range = m.getRange(i);
+            if (range.isEnabled()) {
+                b.append(days[i])
+                        .append(" ")
+                        .append(range.getStart())
+                        .append(" - ")
+                        .append(range.getEnd())
+                        .append("\n");
+            }
+        }
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(b.toString()), null);
     }
 
     public void preview() {
