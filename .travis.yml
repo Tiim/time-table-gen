@@ -7,8 +7,8 @@ before_install:
   - chmod +x gradlew
 
 script:
-  - gradle assemble
-  - gradle test
+  - ./gradlew assemble
+  - ./gradlew test
 
 deploy:
   provider: releases

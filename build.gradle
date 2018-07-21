@@ -7,7 +7,11 @@ def gitversion = 'git describe --tags --long'.execute().text.trim().split("-").t
 def gitsha = gitversion.pop(); // get sha
 def commits = gitversion.pop(); // get commits since tag
 def ver = gitversion.join("-").substring(1); // get tag minus first character
-version ver + "+" + commits + "." + gitsha
+def fullver = ver;
+if (commits != "0") {
+	fullver += "+" + commits + "." + gitsha
+}
+version fullver
 
 compileJava {
     sourceCompatibility = 1.10
